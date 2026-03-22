@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 project(camcpu)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # set the output directory for built objects.
 # This makes sure that the dynamic library goes into the build directory automatically.
@@ -18,3 +19,26 @@ add_executable(
 
 # Link to the actual SDL2 library.
 target_link_libraries(camcpu PRIVATE SDL3::SDL3)
+
+# library for code used by both main and tests
+add_library(camcpu_lib STATIC
+    math.c
+)
+
+target_include_directories(camcpu_lib PUBLIC
+    "include/"
+)
+
+# target_link_libraries(camcpu_lib PRIVATE SDL3::SDL3)
+# Link main against the shared lib
+target_link_libraries(camcpu PRIVATE camcpu_lib)
+
+
+# Test target
+add_executable(camcpu_tests
+    tests/test_main.c
+)
+target_link_libraries(camcpu_tests PRIVATE camcpu_lib)
+enable_testing()
+
+add_test(NAME camcpu_tests COMMAND camcpu_tests)
