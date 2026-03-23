@@ -25,5 +25,8 @@ void vec4_dehomo(Vec4* v, Vec4* res);
 void vec4_print(Vec4* v);
 bool vec4_equals(Vec4* a, Vec4* b);
 bool vec3_equals(Vec3* a, Vec3* b);
+void vec4_add(Vec4* a, Vec4* b, Vec4* res);
+void vec4_scalar_add(Vec4* a, Vec4* b, float scalar, Vec4* res);
+void vec4_scalar_subtract(Vec4* a, Vec4* b, float scalar, Vec4* res);
 
 #endif

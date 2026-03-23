@@ -35,3 +35,21 @@ bool vec3_equals(Vec3* a, Vec3* b) {
 void vec4_print(Vec4* v) {
     printf("Vec4(x=%f,y=%f,z=%f,w=%f)\n", v->x, v->y, v->z, v->w);
 }
+
+void vec4_add(Vec4* a, Vec4* b, Vec4* res) {
+    res->x = a->x + b->x;
+    res->y = a->y + b->y;
+    res->z = a->z + b->z;
+}
+
+void vec4_scalar_add(Vec4* a, Vec4* b, float scalar, Vec4* res) {
+    res->x = a->x + scalar*b->x;
+    res->y = a->y + scalar*b->y;
+    res->z = a->z + scalar*b->z;
+}
+
+void vec4_scalar_subtract(Vec4* a, Vec4* b, float scalar, Vec4* res) {
+    res->x = a->x - scalar*b->x;
+    res->y = a->y - scalar*b->y;
+    res->z = a->z - scalar*b->z;
+}
