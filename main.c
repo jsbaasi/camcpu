@@ -14,10 +14,10 @@ const int WINDOW_WIDTH = 1920 / 2;
 const int WINDOW_HEIGHT = 1080 / 2;
 static float depth = 0.30f;
 static Vec4 square[4] = {
-    {-2, 2, -4, 1},
     {2, 2, -4, 1},
-    {2, -2, -4, 1},
-    {-2, -2, -4, 1},
+    {4, 4, -8, 1},
+    {4, -4, -8, 1},
+    {-4, -4, -8, 1},
 };
 static const float n=1, l=-8, r=8, b=-4.5f, t=4.5f; // 16/9 (1920x1080) viewport
 static Mat4 proj = {
@@ -47,6 +47,8 @@ static Vec4 cameraForwardBasis = {0,0,1,1};
 static Vec4 cameraUpBasis = {0,1,0,1};
 static Vec4 cameraLeftBasis = {1,0,0,1};
 static unsigned int currentTime, dt=0;
+static float yaw = 0;
+static float pitch = 0;
 
 
 // calculate where the points are
@@ -63,40 +65,55 @@ bool update()
         if (e.type == SDL_EVENT_KEY_UP && e.key.key == SDLK_ESCAPE) return false;
         if (e.type == SDL_EVENT_KEY_DOWN && e.key.key == SDLK_S) {
             vec4_scalar_add(&cameraPos, &cameraForwardBasis, 1, &cameraPos);
-            printf("dt=%d\n", dt);
-            vec4_print(&cameraPos);
         }
         if (e.type == SDL_EVENT_KEY_DOWN && e.key.key == SDLK_D) {
             vec4_scalar_add(&cameraPos, &cameraLeftBasis, 1, &cameraPos);
-            vec4_print(&cameraPos);
         }
         if (e.type == SDL_EVENT_KEY_DOWN && e.key.key == SDLK_W) {
             vec4_scalar_subtract(&cameraPos, &cameraForwardBasis, 1, &cameraPos);
-            vec4_print(&cameraPos);
         }
         if (e.type == SDL_EVENT_KEY_DOWN && e.key.key == SDLK_A) {
             vec4_scalar_subtract(&cameraPos, &cameraLeftBasis, 1, &cameraPos);
-            vec4_print(&cameraPos);
         }
-        if (e.type == SDL_EVENT_MOUSE_MOTION) {
-            printf("Relative delta: %f, %f\n", e.motion.xrel, e.motion.yrel);
-        }
+        // if (e.type == SDL_EVENT_MOUSE_MOTION) {
+        //     printf("Relative delta: %f, %f\n", e.motion.xrel, e.motion.yrel);
+        // }
     }
 
     view.x3 = -cameraPos.x;
     view.y3 = -cameraPos.y;
     view.z3 = -cameraPos.z;
 
+    /*
+     *  a square is a collection of 4 vertices which is distinct from a matrix
+    */
+
     Vec4 viewSquare[4] = {};
     Vec4 projSquare[4] = {};
     Vec4 dehomoSquare[4] = {};
-    for (int i = 0; i<4; i++) {
+    for (int i = 0; i<4; i++) { // loop over all vertices, in our case it's just 4 for the square
         mat4_vec4_mult(&view, &square[i], &viewSquare[i]);
+        // printf("viewsquare%d", i);
+        // vec4_print(&viewSquare[i]);
         mat4_vec4_mult(&proj, &viewSquare[i], &projSquare[i]);
+        // printf("projsquare%d", i);
+        // vec4_print(&projSquare[i]);
         vec4_dehomo(&projSquare[i], &dehomoSquare[i]);
         mat4_vec4_mult(&viewport, &dehomoSquare[i], &viewportSquare[i]);
     }
-
+    printf("Square\n");
+    square_print(square);
+    printf("View Square\n");
+    square_print(viewSquare);
+    printf("Projected + Clipped Square\n");
+    square_print(projSquare);
+    printf("Normalised Device Coordinate Square\n");
+    square_print(dehomoSquare);
+/*
+ *        *
+viewsquare0Vec4(x=-2.000000,y=2.000000,z=-1.000000,w=1.000000)
+projsquare0Vec4(x=-0.250000,y=0.444444,z=-1.000000,w=1.000000)
+*/
     SDL_Delay(1);
     return true;
 }

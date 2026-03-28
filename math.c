@@ -53,3 +53,11 @@ void vec4_scalar_subtract(Vec4* a, Vec4* b, float scalar, Vec4* res) {
     res->y = a->y - scalar*b->y;
     res->z = a->z - scalar*b->z;
 }
+
+void square_print(Vec4* square) {
+    printf("Square(\n");
+    for (int i=0; i<4; ++i) {
+        printf("Point %d x=%f y=%f z=%f w=%f\n", i+1, square[i].x, square[i].y, square[i].z, square[i].w);
+    }
+    printf(")\n");
+}
