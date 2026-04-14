@@ -22,7 +22,7 @@ target_link_libraries(camcpu PRIVATE SDL3::SDL3)
 
 # library for code used by both main and tests
 add_library(camcpu_lib STATIC
-    math.c
+    linear.c
 )
 
 target_include_directories(camcpu_lib PUBLIC

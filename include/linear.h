@@ -1,5 +1,5 @@
-#ifndef MATH_H
-#define MATH_H
+#ifndef LINEAR_H
+#define LINEAR_H
 
 #include <stdbool.h>
 
@@ -29,5 +29,9 @@ void vec4_add(Vec4* a, Vec4* b, Vec4* res);
 void vec4_scalar_add(Vec4* a, Vec4* b, float scalar, Vec4* res);
 void vec4_scalar_subtract(Vec4* a, Vec4* b, float scalar, Vec4* res);
 void square_print(Vec4* square);
+void vec4_cross_product(Vec4* a, Vec4* b, Vec4* res);
+double degrees_to_radians(double deg);
+void set_camera_basis(Vec4* cameraForwardBasis, Vec4* cameraUpBasis, Vec4* cameraLeftBasis, double yaw, double pitch);
+void vec4_normalise(Vec4* v);
 
 #endif

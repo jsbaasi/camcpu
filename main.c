@@ -3,7 +3,8 @@
 #include "SDL3/SDL_keycode.h"
 #include "SDL3/SDL_main.h" // IWYU pragma: keep
 #include "SDL3/SDL_timer.h"
-#include "math.h"
+#include "linear.h"
+#include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 
@@ -14,7 +15,7 @@ const int WINDOW_WIDTH = 1920 / 2;
 const int WINDOW_HEIGHT = 1080 / 2;
 static float depth = 0.30f;
 static Vec4 square[4] = {
-    {2, 2, -4, 1},
+    {-4, 4, -2, 1},
     {4, 4, -8, 1},
     {4, -4, -8, 1},
     {-4, -4, -8, 1},
@@ -47,9 +48,9 @@ static Vec4 cameraForwardBasis = {0,0,1,1};
 static Vec4 cameraUpBasis = {0,1,0,1};
 static Vec4 cameraLeftBasis = {1,0,0,1};
 static unsigned int currentTime, dt=0;
-static float yaw = 0;
+static float yaw = -90.0f;
 static float pitch = 0;
-
+static float sensitivity = 0.1f;
 
 // calculate where the points are
 // relx > how many units was moved in the x axis of the 2d screen
@@ -75,10 +76,25 @@ bool update()
         if (e.type == SDL_EVENT_KEY_DOWN && e.key.key == SDLK_A) {
             vec4_scalar_subtract(&cameraPos, &cameraLeftBasis, 1, &cameraPos);
         }
-        // if (e.type == SDL_EVENT_MOUSE_MOTION) {
-        //     printf("Relative delta: %f, %f\n", e.motion.xrel, e.motion.yrel);
-        // }
+        if (e.type == SDL_EVENT_MOUSE_MOTION) {
+            printf("Relative delta: %f, %f\n", e.motion.xrel, e.motion.yrel);
+            yaw += e.motion.xrel * sensitivity;
+            pitch += e.motion.yrel * sensitivity;
+            if (pitch>89.9) pitch = 89.9;
+            if (pitch<-89.9) pitch = -89.9;
+        }
     }
+
+    /*
+     * create our view matrix
+     * i x j = k
+     * j = the up vector here as we don't roll
+     * we cross product forward and up to get the k vector
+     */
+    set_camera_basis(&cameraForwardBasis, &cameraUpBasis, &cameraLeftBasis, yaw, pitch);
+
+
+
 
     view.x3 = -cameraPos.x;
     view.y3 = -cameraPos.y;
